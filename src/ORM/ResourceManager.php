@@ -6,6 +6,11 @@ use Anh\DoctrineResource\ResourceManager as BaseResourceManager;
 
 class ResourceManager extends BaseResourceManager
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $manager;
+
     public function delete($resource, $flush = true)
     {
         // using getReference() to prevent fetching whole entity from db
