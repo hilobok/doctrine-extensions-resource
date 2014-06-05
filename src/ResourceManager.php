@@ -28,6 +28,18 @@ class ResourceManager
      */
     protected $resourceName;
 
+    protected $preEvents = array(
+        'create' => ResourceEvent::PRE_CREATE,
+        'update' => ResourceEvent::PRE_UPDATE,
+        'delete' => ResourceEvent::PRE_DELETE,
+    );
+
+    protected $postEvents = array(
+        'create' => ResourceEvent::POST_CREATE,
+        'update' => ResourceEvent::POST_UPDATE,
+        'delete' => ResourceEvent::POST_DELETE,
+    );
+
     public function __construct(ObjectManager $manager, EventDispatcherInterface $eventDispatcher, $modelClass, $resourceName)
     {
         $this->manager = $manager;
@@ -63,110 +75,69 @@ class ResourceManager
 
     public function create($resource, $flush = true)
     {
-        if (is_array($resource)) {
-            return $this->createList($resource, $flush);
-        }
-
-        $event = $this->dispatchEvent(ResourceEvent::PRE_CREATE, $resource);
-        if ($event->isPropagationStopped()) {
-            return;
-        }
-
-        $this->manager->persist($resource);
-        if ($flush) {
-            $this->manager->flush();
-        }
-
-        $this->dispatchEvent(ResourceEvent::POST_CREATE, $resource);
-
-        return $resource;
-    }
-
-    public function createList(array $resources, $flush = true)
-    {
-        $created = array();
-
-        foreach ($resources as $key => $resource) {
-            $created[$key] = $this->create($resource, false);
-        }
-
-        if ($flush) {
-            $this->manager->flush();
-        }
-
-        return $created;
+        return $this->perform('create', $resource, $flush);
     }
 
     public function update($resource, $flush = true)
     {
-        if (is_array($resource)) {
-            return $this->updateList($resource, $flush);
-        }
-
-        $event = $this->dispatchEvent(ResourceEvent::PRE_UPDATE, $resource);
-        if ($event->isPropagationStopped()) {
-            return;
-        }
-
-        $this->manager->persist($resource);
-        if ($flush) {
-            $this->manager->flush();
-        }
-
-        $this->dispatchEvent(ResourceEvent::POST_UPDATE, $resource);
-
-        return $resource;
-    }
-
-    public function updateList(array $resources, $flush = true)
-    {
-        $updated = array();
-
-        foreach ($resources as $key => $resource) {
-            $updated[$key] = $this->update($resource, false);
-        }
-
-        if ($flush) {
-            $this->manager->flush();
-        }
-
-        return $updated;
+        return $this->perform('update', $resource, $flush);
     }
 
     public function delete($resource, $flush = true)
     {
+        return $this->perform('delete', $resource, $flush);
+    }
+
+    protected function perform($command, $resource, $flush = true)
+    {
         if (is_array($resource)) {
-            return $this->deleteList($resource, $flush);
+            return $this->performMultiple($command, $resource, $flush);
         }
 
-        $event = $this->dispatchEvent(ResourceEvent::PRE_DELETE, $resource);
+        $event = $this->dispatchEvent($this->preEvents[$command], $resource);
+
         if ($event->isPropagationStopped()) {
             return;
         }
 
-        $this->manager->remove($resource);
+        switch ($command) {
+            case 'create':
+            case 'update':
+                $this->manager->persist($resource);
+                break;
+
+            case 'delete':
+                $this->manager->remove($resource);
+                break;
+
+            default:
+                throw new \InvalidArgumentException(
+                    sprintf("Unknown command '%s'.", $command)
+                );
+        }
+
         if ($flush) {
             $this->manager->flush();
         }
 
-        $this->dispatchEvent(ResourceEvent::POST_DELETE, $resource);
+        $this->dispatchEvent($this->postEvents[$command], $resource);
 
         return $resource;
     }
 
-    public function deleteList(array $resources, $flush = true)
+    protected function performMultiple($command, array $resources, $flush)
     {
-        $deleted = array();
+        $result = array();
 
         foreach ($resources as $key => $resource) {
-            $deleted[$key] = $this->delete($resource, false);
+            $result[$key] = $this->perform($command, $resource, false);
         }
 
         if ($flush) {
             $this->manager->flush();
         }
 
-        return $deleted;
+        return $result;
     }
 
     protected function dispatchEvent($eventName, $resource)
