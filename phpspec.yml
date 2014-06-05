@@ -1,0 +1,4 @@
+suites:
+    resource_suite:
+        namespace: Anh\DoctrineResource
+        psr4_prefix: Anh\DoctrineResource

@@ -1,0 +1,55 @@
+{
+    "name": "anh/doctrine-extensions-resource",
+    "type": "library",
+    "description": "Doctrine extension for managing resources",
+    "keywords": [
+        "doctrine", "extension", "object", "resource", "manager", "repository"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Hilobok",
+            "email": "hilobok@gmail.com"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.3",
+        "doctrine/common": "~2.2",
+        "symfony/event-dispatcher": "~2.4"
+    },
+
+    "require-dev": {
+        "doctrine/orm": "~2.4",
+        "doctrine/mongodb-odm": "1.0.x-dev",
+        "doctrine/phpcr-odm": "~1.0",
+        "jackalope/jackalope": "~1.0",
+        "jackalope/jackalope-doctrine-dbal": "~1.0",
+        "phpspec/phpspec": "2.1.x-dev",
+        "anh/paginator": "0.1.0"
+    },
+
+    "suggest": {
+        "doctrine/orm": "",
+        "doctrine/mongodb-odm": "",
+        "doctrine/phpcr-odm": ""
+    },
+
+    "minimum-stability": "stable",
+
+    "autoload": {
+        "psr-4": {
+            "Anh\\DoctrineResource\\": "src"
+        }
+    },
+
+    "config": {
+        "bin-dir": "bin"
+    },
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
+        }
+    }
+}
