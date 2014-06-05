@@ -4,10 +4,12 @@ namespace Anh\DoctrineResource;
 
 trait ResourceRepositoryTrait
 {
+    protected $paginator;
+
     /**
      * {@inheritdoc}
      */
-    public function setPaginator(/* ResourcePaginatorInterface */ $paginator)
+    public function setPaginator($paginator)
     {
         $this->paginator = $paginator;
     }
@@ -78,4 +80,8 @@ trait ResourceRepositoryTrait
     {
         return 'resource';
     }
+
+    abstract function createQueryBuilder();
+    abstract function applyCriteria();
+    abstract function applySorting();
 }
