@@ -2,6 +2,3 @@ inherit: true
 
 filter:
     paths: [src/*]
-
-before_commands:
-    - pecl -q install -f mongo && echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
