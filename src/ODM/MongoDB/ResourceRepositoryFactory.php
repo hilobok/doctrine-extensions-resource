@@ -11,11 +11,21 @@ use Doctrine\ODM\MongoDB\DocumentManager;
  */
 class ResourceRepositoryFactory extends DefaultRepositoryFactory
 {
-    public function __construct(/* ResourcePaginatorInterface */ $paginator)
+    protected $paginator;
+
+    /**
+     * Constructor
+     * @param mixed $paginator Paginator, should be compatible with ResourcePaginatorInterface.
+     */
+    public function __construct($paginator)
     {
         $this->paginator = $paginator;
     }
 
+    /**
+     * {@inheritdoc}
+     * Injects paginator into repository if it's an instance of ResourceRepository.
+     */
     protected function createRepository(DocumentManager $documentManager, $documentName)
     {
         $repository = parent::createRepository($documentManager, $documentName);

@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ResourceRepositoryFactory extends DefaultRepositoryFactory
 {
+    protected $paginator;
+
     /**
      * Constructor
      * @param mixed $paginator Paginator, should be compatible with ResourcePaginatorInterface.
