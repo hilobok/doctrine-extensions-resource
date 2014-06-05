@@ -88,7 +88,7 @@ class ResourceManager
         return $this->perform('delete', $resource, $flush);
     }
 
-    protected function perform($command, $resource, $flush = true)
+    protected function perform($command, $resource, $flush)
     {
         if (is_array($resource)) {
             return $this->performMultiple($command, $resource, $flush);
