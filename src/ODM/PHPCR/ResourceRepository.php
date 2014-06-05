@@ -24,10 +24,7 @@ class ResourceRepository extends DocumentRepository implements ResourceRepositor
         foreach ($criteria as $property => $value) {
             if (!empty($value)) {
                 $queryBuilder
-                    ->andWhere(
-                        sprintf('%s = :%s', $this->getPropertyName($property), $property)
-                    )
-                    ->setParameter($property, $value)
+                    ->where()->eq()->field($this->getPropertyName($property))->literal($property)
                 ;
             }
         }
@@ -46,11 +43,7 @@ class ResourceRepository extends DocumentRepository implements ResourceRepositor
         foreach ($sorting as $property => $order) {
             if (!empty($order)) {
                 $queryBuilder
-                    ->orderBy()
-                    ->{$order}()
-                    ->field(
-                        $this->getPropertyName($property)
-                    )
+                    ->orderBy()->{$order}()->field($this->getPropertyName($property))
                 ;
             }
         }

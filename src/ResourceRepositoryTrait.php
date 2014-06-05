@@ -81,7 +81,6 @@ trait ResourceRepositoryTrait
         return 'resource';
     }
 
-    abstract function createQueryBuilder();
-    abstract function applyCriteria();
-    abstract function applySorting();
+    abstract function applyCriteria($queryBuilder, $criteria);
+    abstract function applySorting($queryBuilder, $sorting);
 }
