@@ -5,26 +5,11 @@ namespace Anh\DoctrineResource\ODM\MongoDB;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\MongoDB\Query\Builder as QueryBuilder;
 use Anh\DoctrineResource\ResourceRepositoryInterface;
+use Anh\DoctrineResource\ResourceRepositoryTrait;
 
 class ResourceRepository extends DocumentRepository implements ResourceRepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setPaginator(/* ResourcePaginatorInterface */ $paginator)
-    {
-        $this->paginator = $paginator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function paginate($page, $limit, array $criteria = null, array $sorting = null)
-    {
-        $queryBuilder = $this->prepareQueryBuilder($criteria, $sorting);
-
-        return $this->paginator->paginate($queryBuilder, $page, $limit);
-    }
+    use ResourceRepositoryTrait;
 
     /**
      * {@inheritdoc}
@@ -45,24 +30,6 @@ class ResourceRepository extends DocumentRepository implements ResourceRepositor
             ->getQuery()
             ->execute()
         ;
-    }
-
-    protected function prepareQueryBuilder(array $criteria = null, array $sorting = null)
-    {
-        $queryBuilder = $this->getQueryBuilder();
-
-        $this->applyCriteria($queryBuilder, $criteria);
-        $this->applySorting($queryBuilder, $sorting);
-
-        return $queryBuilder;
-    }
-
-    /**
-     * @return QueryBuilder
-     */
-    protected function getQueryBuilder()
-    {
-        return $this->createQueryBuilder();
     }
 
     /**
