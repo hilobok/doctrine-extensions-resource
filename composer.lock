@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2742881da459262e58c135a2b3f7530d",
+    "hash": "4abd166bd75b7e5b6f80a6a3d1df8d99",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -665,12 +665,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "9828ad004fcbd37f0bd7bb5ade98ec40c3bb7f55"
+                "reference": "d6110fa6840370fc49c5492cb6a30d8432ddfa8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/9828ad004fcbd37f0bd7bb5ade98ec40c3bb7f55",
-                "reference": "9828ad004fcbd37f0bd7bb5ade98ec40c3bb7f55",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/d6110fa6840370fc49c5492cb6a30d8432ddfa8d",
+                "reference": "d6110fa6840370fc49c5492cb6a30d8432ddfa8d",
                 "shasum": ""
             },
             "require": {
@@ -735,7 +735,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2014-06-03 20:43:23"
+            "time": "2014-06-06 17:50:20"
         },
         {
             "name": "doctrine/orm",
