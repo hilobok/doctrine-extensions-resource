@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ResourceManagerFactorySpec extends ObjectBehavior
 {
-    public function let(ORMObjectManager $manager, EventDispatcherInterface $eventDispatcher)
+    public function let(EventDispatcherInterface $eventDispatcher)
     {
         $this->beConstructedWith(
             array(
@@ -18,7 +18,6 @@ class ResourceManagerFactorySpec extends ObjectBehavior
                 'car' => array(
                 )
             ),
-            $manager,
             $eventDispatcher
         );
     }
@@ -28,22 +27,22 @@ class ResourceManagerFactorySpec extends ObjectBehavior
         $this->shouldHaveType('Anh\DoctrineResource\ResourceManagerFactory');
     }
 
-    public function it_should_create_manager()
+    public function it_should_create_manager(ORMObjectManager $manager)
     {
-        $this->create('article')->shouldHaveType('Anh\DoctrineResource\ResourceManager');
+        $this->create('article', $manager)->shouldHaveType('Anh\DoctrineResource\ResourceManager');
     }
 
-    public function it_should_throw_exception_on_undefined_resource()
+    public function it_should_throw_exception_on_undefined_resource(ORMObjectManager $manager)
     {
         $this->shouldThrow('InvalidArgumentException')
-            ->during('create', array('blog'))
+            ->during('create', array('blog', $manager))
         ;
     }
 
-    public function it_should_throw_exception_on_resource_without_model()
+    public function it_should_throw_exception_on_resource_without_model(ORMObjectManager $manager)
     {
         $this->shouldThrow('InvalidArgumentException')
-            ->during('create', array('car'))
+            ->during('create', array('car', $manager))
         ;
     }
 }
