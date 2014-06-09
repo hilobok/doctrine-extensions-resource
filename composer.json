@@ -30,6 +30,7 @@
     },
 
     "suggest": {
+        "anh/paginator": "",
         "doctrine/orm": "",
         "doctrine/mongodb-odm": "",
         "doctrine/phpcr-odm": ""
