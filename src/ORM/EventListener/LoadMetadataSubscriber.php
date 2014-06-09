@@ -7,7 +7,7 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class LoadMetadataSubcriber implements EventSubscriber
+class LoadMetadataSubscriber implements EventSubscriber
 {
     /**
      * @var array
