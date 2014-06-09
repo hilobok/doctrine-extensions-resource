@@ -35,10 +35,10 @@ $resources = array(
 $entityManager->getEventManager()->addEventSubscriber(new LoadMetadataSubscriber($resources));
 
 // create factory for resource manager
-$resourceManagerFactory = new ResourceManagerFactory($resources, $entityManager, $eventDispatcher);
+$resourceManagerFactory = new ResourceManagerFactory($resources, $eventDispatcher);
 
 // create resource manager
-$articleManager = $resourceManagerFactory->create('article');
+$articleManager = $resourceManagerFactory->create('article', $entityManager);
 
 // resource manager usage
 $article = $articleManager->createResource();

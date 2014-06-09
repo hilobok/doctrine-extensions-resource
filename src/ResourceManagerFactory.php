@@ -9,25 +9,21 @@ class ResourceManagerFactory
 {
     protected $resources;
 
-    protected $manager;
-
     protected $eventDispatcher;
 
     protected $classResolver;
 
     public function __construct(
         array $resources,
-        ObjectManager $manager,
         EventDispatcherInterface $eventDispatcher,
         ResourceManagerClassResolver $classResolver = null
     ) {
         $this->resources = $resources;
-        $this->manager = $manager;
         $this->eventDispatcher = $eventDispatcher;
         $this->classResolver = $classResolver ?: new ResourceManagerClassResolver();
     }
 
-    public function create($resourceName)
+    public function create($resourceName, ObjectManager $manager)
     {
         $resource = $this->getResource($resourceName);
 
@@ -43,10 +39,10 @@ class ResourceManagerFactory
             );
         }
 
-        $managerClass = $this->classResolver->resolve($this->manager);
+        $managerClass = $this->classResolver->resolve($manager);
 
         return new $managerClass(
-            $this->manager,
+            $manager,
             $this->eventDispatcher,
             $resource['model'],
             $resourceName
