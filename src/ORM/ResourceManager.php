@@ -11,7 +11,7 @@ class ResourceManager extends BaseResourceManager
      */
     protected $manager;
 
-    public function delete($resource, $flush = true)
+    protected function perform($command, $resource, $flush)
     {
         // using getReference() to prevent fetching whole entity from db
         // http://stackoverflow.com/questions/11486662/doctrine-entity-remove-vs-delete-query-performance-comparison
@@ -19,6 +19,6 @@ class ResourceManager extends BaseResourceManager
             $resource = $this->manager->getReference($this->modelClass, $resource);
         }
 
-        return parent::delete($resource, $flush);
+        return parent::perform($command, $resource, $flush);
     }
 }
