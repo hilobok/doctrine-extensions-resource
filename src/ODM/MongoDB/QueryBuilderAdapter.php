@@ -26,6 +26,9 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         'exists' => 'exists',
         'type' => 'type',
         'all' => 'all',
+        'where' => 'where',
+        'map' => 'map',
+        'reduce' => 'reduce',
     );
 
     public function buildCriteria($builder, array $criteria)
