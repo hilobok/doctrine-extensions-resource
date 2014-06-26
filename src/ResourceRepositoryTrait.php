@@ -78,6 +78,8 @@ trait ResourceRepositoryTrait
         return $this->adapter;
     }
 
+    abstract protected function getAdapterClass();
+
     /**
      * @param QueryBuilder $queryBuilder
      * @param array        $criteria
