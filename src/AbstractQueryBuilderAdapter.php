@@ -21,6 +21,8 @@ abstract class AbstractQueryBuilderAdapter
 {
     protected $alias;
 
+    protected $parameters;
+
     abstract public function buildCriteria($builder, array $criteria);
     abstract public function buildSorting($builder, array $sorting);
     abstract public function buildLimit($builder, $limit);
