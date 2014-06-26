@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "703384834f11d9ed57da046768899578",
+    "hash": "9455f4c13eb9e8018d5e2a2689d86269",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -666,12 +666,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "d6110fa6840370fc49c5492cb6a30d8432ddfa8d"
+                "reference": "f650a3848e26adfb0a6ba91bef94f64c95b50fdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/d6110fa6840370fc49c5492cb6a30d8432ddfa8d",
-                "reference": "d6110fa6840370fc49c5492cb6a30d8432ddfa8d",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/f650a3848e26adfb0a6ba91bef94f64c95b50fdc",
+                "reference": "f650a3848e26adfb0a6ba91bef94f64c95b50fdc",
                 "shasum": ""
             },
             "require": {
@@ -736,7 +736,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2014-06-06 17:50:20"
+            "time": "2014-06-20 23:08:43"
         },
         {
             "name": "doctrine/orm",
@@ -1060,16 +1060,16 @@
         },
         {
             "name": "phpcr/phpcr-utils",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpcr/phpcr-utils.git",
-                "reference": "e50943432f8e26f9fc05af7994f8747ead3270fa"
+                "reference": "25e62cda03a43ded9f95830021aa1ff8e077997b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpcr/phpcr-utils/zipball/e50943432f8e26f9fc05af7994f8747ead3270fa",
-                "reference": "e50943432f8e26f9fc05af7994f8747ead3270fa",
+                "url": "https://api.github.com/repos/phpcr/phpcr-utils/zipball/25e62cda03a43ded9f95830021aa1ff8e077997b",
+                "reference": "25e62cda03a43ded9f95830021aa1ff8e077997b",
                 "shasum": ""
             },
             "require": {
@@ -1119,7 +1119,7 @@
                 "contentrepository",
                 "phpcr"
             ],
-            "time": "2014-02-02 18:30:21"
+            "time": "2014-06-17 13:04:25"
         },
         {
             "name": "phpspec/php-diff",
@@ -1160,12 +1160,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/phpspec.git",
-                "reference": "886a8c1f0a212d631942b5527691fadcd2aa8eb7"
+                "reference": "4e2a03397e551316ac2a29189d4d925b30a7d373"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/phpspec/zipball/886a8c1f0a212d631942b5527691fadcd2aa8eb7",
-                "reference": "886a8c1f0a212d631942b5527691fadcd2aa8eb7",
+                "url": "https://api.github.com/repos/phpspec/phpspec/zipball/4e2a03397e551316ac2a29189d4d925b30a7d373",
+                "reference": "4e2a03397e551316ac2a29189d4d925b30a7d373",
                 "shasum": ""
             },
             "require": {
@@ -1226,7 +1226,7 @@
                 "testing",
                 "tests"
             ],
-            "time": "2014-05-09 09:04:39"
+            "time": "2014-06-26 14:27:25"
         },
         {
             "name": "phpspec/prophecy",
