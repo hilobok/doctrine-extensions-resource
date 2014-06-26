@@ -4,7 +4,7 @@
 
 ## Installation
 ```bash
-$ php composer.phar require 'anh/doctrine-extensions-resource:0.1.0'
+$ php composer.phar require 'anh/doctrine-extensions-resource:0.2.*'
 ```
 ## Usage
 See [orm-example.php](https://github.com/hilobok/doctrine-extensions-resource/blob/master/orm-example.php).
