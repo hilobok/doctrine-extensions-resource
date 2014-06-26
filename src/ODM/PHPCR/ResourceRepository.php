@@ -3,7 +3,6 @@
 namespace Anh\DoctrineResource\ODM\PHPCR;
 
 use Doctrine\ODM\PHPCR\DocumentRepository;
-use Doctrine\ODM\PHPCR\Query\Builder\QueryBuilder;
 use Anh\DoctrineResource\ResourceRepositoryInterface;
 use Anh\DoctrineResource\ResourceRepositoryTrait;
 

@@ -3,7 +3,6 @@
 namespace Anh\DoctrineResource\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
-use Doctrine\MongoDB\Query\Builder as QueryBuilder;
 use Anh\DoctrineResource\ResourceRepositoryInterface;
 use Anh\DoctrineResource\ResourceRepositoryTrait;
 

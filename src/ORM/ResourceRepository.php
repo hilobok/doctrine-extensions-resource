@@ -3,7 +3,6 @@
 namespace Anh\DoctrineResource\ORM;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use Anh\DoctrineResource\ResourceRepositoryInterface;
 use Anh\DoctrineResource\ResourceRepositoryTrait;
 
