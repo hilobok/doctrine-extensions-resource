@@ -11,5 +11,8 @@ class ResourceRepository extends EntityRepository implements ResourceRepositoryI
 {
     use ResourceRepositoryTrait;
 
-    protected $adapterClass = 'Anh\DoctrineResource\ORM\QueryBuilderAdapter';
+    protected function getAdapterClass()
+    {
+        return 'Anh\DoctrineResource\ORM\QueryBuilderAdapter';
+    }
 }

@@ -71,7 +71,8 @@ trait ResourceRepositoryTrait
     protected function getAdapter()
     {
         if ($this->adapter === null) {
-            $this->adapter = new $this->adapterClass();
+            $adapterClass = $this->getAdapterClass();
+            $this->adapter = new $adapterClass;
         }
 
         return $this->adapter;

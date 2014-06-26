@@ -11,5 +11,8 @@ class ResourceRepository extends DocumentRepository implements ResourceRepositor
 {
     use ResourceRepositoryTrait;
 
-    protected $adapterClass = 'Anh\DoctrineResource\ODM\MongoDB\QueryBuilderAdapter';
+    protected function getAdapterClass()
+    {
+        return 'Anh\DoctrineResource\ODM\MongoDB\QueryBuilderAdapter';
+    }
 }
