@@ -23,6 +23,10 @@ abstract class AbstractQueryBuilderAdapter
 
     protected $parameters;
 
+    protected $typeMap;
+
+    protected $operatorMap;
+
     abstract public function buildCriteria($builder, array $criteria);
     abstract public function buildSorting($builder, array $sorting);
     abstract public function buildLimit($builder, $limit);
