@@ -6,6 +6,8 @@ trait ResourceRepositoryTrait
 {
     protected $paginator;
 
+    protected $adapter;
+
     /**
      * {@inheritdoc}
      */
@@ -30,24 +32,22 @@ trait ResourceRepositoryTrait
     public function fetch(array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
         $queryBuilder = $this->prepareQueryBuilder($criteria, $sorting);
+        $adapter = $this->getAdapter();
 
         if (null !== $limit) {
-            $queryBuilder->setMaxResults($limit);
+            $adapter->buildLimit($queryBuilder, $limit);
         }
 
         if (null !== $offset) {
-            $queryBuilder->setFirstResult($offset);
+            $adapter->buildOffset($queryBuilder, $offset);
         }
 
-        return $queryBuilder
-            ->getQuery()
-            ->getResult()
-        ;
+        return $adapter->getResult($queryBuilder);
     }
 
-    protected function prepareQueryBuilder(array $criteria = null, array $sorting = null)
+    protected function prepareQueryBuilder(array $criteria = null, array $sorting = null, QueryBuilder $queryBuilder = null)
     {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $queryBuilder ?: $this->getQueryBuilder();
 
         $this->applyCriteria($queryBuilder, $criteria);
         $this->applySorting($queryBuilder, $sorting);
@@ -63,24 +63,49 @@ trait ResourceRepositoryTrait
         return $this->createQueryBuilder($this->getAlias());
     }
 
-    /**
-     * @param  string $name
-     * @return string
-     */
-    protected function getPropertyName($name)
-    {
-        if (false === strpos($name, '.')) {
-            return sprintf('%s.%s', $this->getAlias(), $name);
-        }
-
-        return $name;
-    }
-
     protected function getAlias()
     {
         return 'resource';
     }
 
-    abstract function applyCriteria($queryBuilder, $criteria);
-    abstract function applySorting($queryBuilder, $sorting);
+    protected function getAdapter()
+    {
+        if ($this->adapter === null) {
+            $this->adapter = new $this->adapterClass();
+        }
+
+        return $this->adapter;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param array        $criteria
+     */
+    protected function applyCriteria($queryBuilder, array $criteria = null)
+    {
+        if (empty($criteria)) {
+            return;
+        }
+
+        $this->getAdapter()
+            ->setAlias($this->getAlias())
+            ->buildCriteria($queryBuilder, $criteria)
+        ;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param array        $sorting
+     */
+    protected function applySorting($queryBuilder, array $sorting = null)
+    {
+        if (empty($sorting)) {
+            return;
+        }
+
+        $this->getAdapter()
+            ->setAlias($this->getAlias())
+            ->buildSorting($queryBuilder, $sorting)
+        ;
+    }
 }

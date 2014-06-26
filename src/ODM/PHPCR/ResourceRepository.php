@@ -11,43 +11,5 @@ class ResourceRepository extends DocumentRepository implements ResourceRepositor
 {
     use ResourceRepositoryTrait;
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array        $criteria
-     */
-    protected function applyCriteria(QueryBuilder $queryBuilder, array $criteria = null)
-    {
-        if (null === $criteria) {
-            return;
-        }
-
-        foreach ($criteria as $property => $value) {
-            if (!empty($value)) {
-                $queryBuilder
-                    ->where()->eq()->field($this->getPropertyName($property))->literal($property)
-                ;
-            }
-        }
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array        $sorting
-     */
-    protected function applySorting(QueryBuilder $queryBuilder, array $sorting = null)
-    {
-        if (null === $sorting) {
-            return;
-        }
-
-        foreach ($sorting as $property => $order) {
-            if (!empty($order)) {
-                $queryBuilder
-                    ->orderBy()->{$order}()->field($this->getPropertyName($property))
-                ;
-            }
-        }
-
-        $queryBuilder->end();
-    }
+    protected $adapterClass = 'Anh\DoctrineResource\ODM\PHPCR\QueryBuilderAdapter';
 }
