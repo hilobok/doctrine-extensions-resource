@@ -45,7 +45,7 @@ trait ResourceRepositoryTrait
         return $adapter->getResult($queryBuilder);
     }
 
-    protected function prepareQueryBuilder(array $criteria = null, array $sorting = null, QueryBuilder $queryBuilder = null)
+    protected function prepareQueryBuilder(array $criteria = null, array $sorting = null, $queryBuilder = null)
     {
         $queryBuilder = $queryBuilder ?: $this->getQueryBuilder();
 
