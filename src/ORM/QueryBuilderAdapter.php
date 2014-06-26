@@ -53,21 +53,6 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         }
     }
 
-    public function buildLimit($builder, $limit)
-    {
-        $builder->setMaxResults($limit);
-    }
-
-    public function buildOffset($builder, $offset)
-    {
-        $builder->setFirstResult($offset);
-    }
-
-    public function getResult($builder)
-    {
-        return $builder->getQuery()->getResult();
-    }
-
     protected function createType($builder, $type, $value)
     {
         $params = array();

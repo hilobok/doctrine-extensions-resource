@@ -29,12 +29,24 @@ abstract class AbstractQueryBuilderAdapter
 
     abstract public function buildCriteria($builder, array $criteria);
     abstract public function buildSorting($builder, array $sorting);
-    abstract public function buildLimit($builder, $limit);
-    abstract public function buildOffset($builder, $offset);
-    abstract public function getResult($builder);
 
     abstract protected function createType($builder, $type, $value);
     abstract protected function createOperator($builder, $field, $operator, $value);
+
+    public function buildLimit($builder, $limit)
+    {
+        $builder->setMaxResults($limit);
+    }
+
+    public function buildOffset($builder, $offset)
+    {
+        $builder->setFirstResult($offset);
+    }
+
+    public function getResult($builder)
+    {
+        return $builder->getQuery()->getResult();
+    }
 
     public function setAlias($alias)
     {
