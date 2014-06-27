@@ -17,7 +17,7 @@ $criteria = [
 ];
  */
 
-abstract class AbstractQueryBuilderAdapter
+abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterface
 {
     protected $alias;
 
@@ -27,25 +27,37 @@ abstract class AbstractQueryBuilderAdapter
 
     protected $operatorMap;
 
-    abstract public function buildCriteria($builder, array $criteria);
-    abstract public function buildSorting($builder, array $sorting);
+    abstract public function applyCriteria($queryBuilder, array $criteria);
+    abstract public function applySorting($queryBuilder, array $sorting);
 
     abstract protected function createType($builder, $type, $value);
     abstract protected function createOperator($builder, $field, $operator, $value);
 
-    public function buildLimit($builder, $limit)
+    public function applyLimit($queryBuilder, $limit = null)
     {
-        $builder->setMaxResults($limit);
+        if (empty($limit)) {
+            return $this;
+        }
+
+        $queryBuilder->setMaxResults($limit);
+
+        return $this;
     }
 
-    public function buildOffset($builder, $offset)
+    public function applyOffset($queryBuilder, $offset = null)
     {
-        $builder->setFirstResult($offset);
+        if ($offset === null) {
+            return $this;
+        }
+
+        $queryBuilder->setFirstResult($offset);
+
+        return $this;
     }
 
-    public function getResult($builder)
+    public function getResult($queryBuilder)
     {
-        return $builder->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     public function setAlias($alias)

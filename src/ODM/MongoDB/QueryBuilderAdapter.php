@@ -31,30 +31,54 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         'reduce' => 'reduce',
     );
 
-    public function buildCriteria($builder, array $criteria)
+    public function applyCriteria($queryBuilder, array $criteria = null)
     {
-        $this->parameters = array();
-        $this->processCriteria($builder, '#and', $criteria);
-    }
-
-    public function buildSorting($builder, array $sorting)
-    {
-        foreach ($sorting as $field => $order) {
-            $builder->sort($field, $order);
+        if (empty($criteria)) {
+            return $this;
         }
+
+        $this->parameters = array();
+        $this->processCriteria($queryBuilder, '#and', $criteria);
+
+        return $this;
     }
 
-    public function buildLimit($builder, $limit)
+    public function applySorting($queryBuilder, array $sorting = null)
     {
-        $builder->limit($limit);
+        if (empty($sorting)) {
+            return $this;
+        }
+
+        foreach ($sorting as $field => $order) {
+            $queryBuilder->sort($field, $order);
+        }
+
+        return $this;
     }
 
-    public function buildOffset($builder, $offset)
+    public function applyLimit($queryBuilder, $limit = null)
     {
-        $builder->skip($offset);
+        if (empty($limit)) {
+            return $this;
+        }
+
+        $queryBuilder->limit($limit);
+
+        return $this;
     }
 
-    public function getResult($builder)
+    public function applyOffset($queryBuilder, $offset = null)
+    {
+        if ($offset === null) {
+            return $this;
+        }
+
+        $queryBuilder->skip($offset);
+
+        return $this;
+    }
+
+    public function getResult($queryBuilder)
     {
         return $builder->getQuery()->execute();
     }

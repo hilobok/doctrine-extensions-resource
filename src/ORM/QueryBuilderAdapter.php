@@ -33,24 +33,36 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         'is not null',
     );
 
-    public function buildCriteria($builder, array $criteria)
+    public function applyCriteria($queryBuilder, array $criteria = null)
     {
+        if (empty($criteria)) {
+            return $this;
+        }
+
         $this->parameters = array();
 
-        $builder->where(
-            $this->processCriteria($builder, '#and', $criteria)
+        $queryBuilder->where(
+            $this->processCriteria($queryBuilder, '#and', $criteria)
         );
 
         if (!empty($this->parameters)) {
-            $builder->setParameters($this->parameters);
+            $queryBuilder->setParameters($this->parameters);
         }
+
+        return $this;
     }
 
-    public function buildSorting($builder, array $sorting)
+    public function applySorting($queryBuilder, array $sorting = null)
     {
-        foreach ($sorting as $field => $order) {
-            $builder->orderBy($this->getFieldName($field), $order);
+        if (empty($sorting)) {
+            return $this;
         }
+
+        foreach ($sorting as $field => $order) {
+            $queryBuilder->orderBy($this->getFieldName($field), $order);
+        }
+
+        return $this;
     }
 
     protected function createType($builder, $type, $value)

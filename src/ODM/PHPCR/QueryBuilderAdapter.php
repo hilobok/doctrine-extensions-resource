@@ -23,23 +23,35 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         'like' => 'like',
     );
 
-    public function buildCriteria($builder, array $criteria)
+    public function applyCriteria($queryBuilder, array $criteria = null)
     {
+        if (empty($criteria)) {
+            return;
+        }
+
         $this->parameters = array();
-        $this->processCriteria($builder->where(), '#and', $criteria);
+        $this->processCriteria($queryBuilder->where(), '#and', $criteria);
 
         if (!empty($this->parameters)) {
             foreach ($this->parameters as $name => $value) {
-                $builder->setParameter($name, $value);
+                $queryBuilder->setParameter($name, $value);
             }
         }
+
+        return $this;
     }
 
-    public function buildSorting($builder, array $sorting)
+    public function applySorting($queryBuilder, array $sorting = null)
     {
-        foreach ($sorting as $field => $order) {
-            $builder->addOrderBy()->{$order}()->field($this->getFieldName($field));
+        if (empty($sorting)) {
+            return;
         }
+
+        foreach ($sorting as $field => $order) {
+            $queryBuilder->addOrderBy()->{$order}()->field($this->getFieldName($field));
+        }
+
+        return $this;
     }
 
     protected function getDefaultOperator($value)

@@ -21,7 +21,11 @@ trait ResourceRepositoryTrait
      */
     public function paginate($page, $limit, array $criteria = null, array $sorting = null)
     {
-        $queryBuilder = $this->prepareQueryBuilder($criteria, $sorting);
+        $queryBuilder = $this->prepareQueryBuilder(
+            $this->getQueryBuilder(),
+            $criteria,
+            $sorting
+        );
 
         return $this->paginator->paginate($queryBuilder, $page, $limit);
     }
@@ -31,26 +35,26 @@ trait ResourceRepositoryTrait
      */
     public function fetch(array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
-        $queryBuilder = $this->prepareQueryBuilder($criteria, $sorting);
-        $adapter = $this->getAdapter();
+        $queryBuilder = $this->prepareQueryBuilder(
+            $this->getQueryBuilder(),
+            $criteria,
+            $sorting,
+            $limit,
+            $offset
+        );
 
-        if (null !== $limit) {
-            $adapter->buildLimit($queryBuilder, $limit);
-        }
-
-        if (null !== $offset) {
-            $adapter->buildOffset($queryBuilder, $offset);
-        }
-
-        return $adapter->getResult($queryBuilder);
+        return $this->getAdapter()->getResult($queryBuilder);
     }
 
-    protected function prepareQueryBuilder(array $criteria = null, array $sorting = null, $queryBuilder = null)
+    protected function prepareQueryBuilder($queryBuilder, array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
-        $queryBuilder = $queryBuilder ?: $this->getQueryBuilder();
-
-        $this->applyCriteria($queryBuilder, $criteria);
-        $this->applySorting($queryBuilder, $sorting);
+        $this->getAdapter()
+            ->setAlias($this->getAlias())
+            ->applyCriteria($queryBuilder, $criteria)
+            ->applySorting($queryBuilder, $sorting)
+            ->applyLimit($queryBuilder, $limit)
+            ->applyOffset($queryBuilder, $offset)
+        ;
 
         return $queryBuilder;
     }
@@ -79,36 +83,4 @@ trait ResourceRepositoryTrait
     }
 
     abstract protected function getAdapterClass();
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array        $criteria
-     */
-    protected function applyCriteria($queryBuilder, array $criteria = null)
-    {
-        if (empty($criteria)) {
-            return;
-        }
-
-        $this->getAdapter()
-            ->setAlias($this->getAlias())
-            ->buildCriteria($queryBuilder, $criteria)
-        ;
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array        $sorting
-     */
-    protected function applySorting($queryBuilder, array $sorting = null)
-    {
-        if (empty($sorting)) {
-            return;
-        }
-
-        $this->getAdapter()
-            ->setAlias($this->getAlias())
-            ->buildSorting($queryBuilder, $sorting)
-        ;
-    }
 }
