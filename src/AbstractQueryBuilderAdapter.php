@@ -8,12 +8,14 @@ $criteria = [
     '#or' => [
         'isValid' => true,
         '%state' => [ 'not in' => [ 'moderated', 'approved' ]]
-    ]
+    ],
     '%rating' => [ '>' => 10 ]
     '#or-2' => [
         '%title-1' => [ 'like' => 'test%' ]
         '%title-2' => [ 'like' => '%test' ]
-    ]
+    ],
+
+    "date_sub(resource.createdAt, 1, 'DAY') > 0",
 ];
  */
 
@@ -90,6 +92,11 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         return $key[0] === '%';
     }
 
+    protected function isFieldLess($key)
+    {
+        return is_numeric($key);
+    }
+
     protected function getType($key)
     {
         if (!preg_match('/#(?P<type>and|or)(-\d+)?$/i', $key, $match)) {
@@ -144,6 +151,10 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
             return $this->createType($builder, $type, $value);
         }
 
+        if ($this->isFieldLess($key)) {
+            return $this->createRaw($builder, $value);
+        }
+
         if ($this->isField($key)) {
             $field = $this->getField($key);
 
@@ -167,5 +178,12 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         }
 
         return $this->createOperator($builder, $field, $operator, $value);
+    }
+
+    protected function createRaw($builder, $value)
+    {
+        throw new \Exception(
+            sprintf("Raw condition '%s' not supported.", $value)
+        );
     }
 }
