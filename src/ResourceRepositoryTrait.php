@@ -8,6 +8,8 @@ trait ResourceRepositoryTrait
 
     protected $adapter;
 
+    protected $alias = 'resource';
+
     /**
      * {@inheritdoc}
      */
@@ -46,6 +48,16 @@ trait ResourceRepositoryTrait
         return $this->getAdapter()->getResult($queryBuilder);
     }
 
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
+
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
     protected function prepareQueryBuilder($queryBuilder, array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
         $this->getAdapter()
@@ -65,11 +77,6 @@ trait ResourceRepositoryTrait
     protected function getQueryBuilder()
     {
         return $this->createQueryBuilder($this->getAlias());
-    }
-
-    protected function getAlias()
-    {
-        return 'resource';
     }
 
     protected function getAdapter()
