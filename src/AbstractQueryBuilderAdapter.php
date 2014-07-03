@@ -175,7 +175,7 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
                 return $this->processCriteria($builder, '#and', $criteria);
             }
 
-            return $this->createRaw($builder, $value);
+            return $this->createRaw($value);
         }
 
         if ($this->isField($key)) {
@@ -203,7 +203,7 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         return $this->createOperator($builder, $field, $operator, $value);
     }
 
-    protected function createRaw($builder, $value)
+    protected function createRaw($value)
     {
         throw new \Exception(
             sprintf("Raw condition '%s' not supported.", $value)

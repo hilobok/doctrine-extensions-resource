@@ -95,7 +95,7 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         );
     }
 
-    protected function createRaw($builder, $value)
+    protected function createRaw($value)
     {
         return $value;
     }
