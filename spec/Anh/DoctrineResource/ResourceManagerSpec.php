@@ -13,7 +13,7 @@ class ResourceManagerSpec extends ObjectBehavior
     public function let(ObjectManager $manager, EventDispatcherInterface $eventDispatcher, ResourceEvent $event)
     {
         $eventDispatcher->dispatch(Argument::any(), Argument::any())->willReturn($event);
-        $this->beConstructedWith($manager, $eventDispatcher, 'StdClass', 'entity');
+        $this->beConstructedWith($manager, $eventDispatcher, 'StdClass', 'entity', 'entity');
     }
 
     public function it_is_initializable()
