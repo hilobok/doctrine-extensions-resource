@@ -80,7 +80,7 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
 
     public function getResult($queryBuilder)
     {
-        return $builder->getQuery()->execute();
+        return $queryBuilder->getQuery()->execute();
     }
 
     protected function createType($builder, $type, $value)
