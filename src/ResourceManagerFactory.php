@@ -39,13 +39,18 @@ class ResourceManagerFactory
             );
         }
 
+        if (!isset($resource['alias'])) {
+            $resource['alias'] = 'resource';
+        }
+
         $managerClass = $this->classResolver->resolve($manager);
 
         return new $managerClass(
             $manager,
             $this->eventDispatcher,
             $resource['model'],
-            $resourceName
+            $resourceName,
+            $resource['alias']
         );
     }
 

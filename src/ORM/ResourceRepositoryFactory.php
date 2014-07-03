@@ -4,18 +4,22 @@ namespace Anh\DoctrineResource\ORM;
 
 use Doctrine\ORM\Repository\DefaultRepositoryFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use Anh\DoctrineResource\RuleResolver;
 
 class ResourceRepositoryFactory extends DefaultRepositoryFactory
 {
     protected $paginator;
 
+    protected $ruleResolver;
+
     /**
      * Constructor
      * @param mixed $paginator Paginator, should be compatible with ResourcePaginatorInterface.
      */
-    public function __construct($paginator)
+    public function __construct($paginator, RuleResolver $ruleResolver = null)
     {
         $this->paginator = $paginator;
+        $this->ruleResolver = $ruleResolver ?: new RuleResolver();
     }
 
     /**
@@ -27,7 +31,10 @@ class ResourceRepositoryFactory extends DefaultRepositoryFactory
         $repository = parent::createRepository($entityManager, $entityName);
 
         if ($repository instanceof ResourceRepository) {
-            $repository->setPaginator($this->paginator);
+            $repository
+                ->setPaginator($this->paginator)
+                ->setRuleResolver($this->ruleResolver)
+            ;
         }
 
         return $repository;

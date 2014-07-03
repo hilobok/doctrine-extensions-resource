@@ -6,9 +6,13 @@ trait ResourceRepositoryTrait
 {
     protected $paginator;
 
+    protected $ruleResolver;
+
     protected $adapter;
 
-    protected $alias = 'resource';
+    protected $resourceAlias = 'resource';
+
+    protected $resourceName;
 
     /**
      * {@inheritdoc}
@@ -16,6 +20,15 @@ trait ResourceRepositoryTrait
     public function setPaginator($paginator)
     {
         $this->paginator = $paginator;
+
+        return $this;
+    }
+
+    public function setRuleResolver(RuleResolver $ruleResolver)
+    {
+        $this->ruleResolver = $ruleResolver;
+
+        return $this;
     }
 
     /**
@@ -48,20 +61,23 @@ trait ResourceRepositoryTrait
         return $this->getAdapter()->getResult($queryBuilder);
     }
 
-    public function setAlias($alias)
+    public function setResourceName($resourceName)
     {
-        $this->alias = $alias;
+        $this->resourceName = $resourceName;
+
+        return $this;
     }
 
-    public function getAlias()
+    public function setResourceAlias($resourceAlias)
     {
-        return $this->alias;
+        $this->resourceAlias = $resourceAlias;
+
+        return $this;
     }
 
     protected function prepareQueryBuilder($queryBuilder, array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
         $this->getAdapter()
-            ->setAlias($this->getAlias())
             ->applyCriteria($queryBuilder, $criteria)
             ->applySorting($queryBuilder, $sorting)
             ->applyLimit($queryBuilder, $limit)
@@ -76,14 +92,18 @@ trait ResourceRepositoryTrait
      */
     protected function getQueryBuilder()
     {
-        return $this->createQueryBuilder($this->getAlias());
+        return $this->createQueryBuilder($this->resourceAlias);
     }
 
     protected function getAdapter()
     {
         if ($this->adapter === null) {
             $adapterClass = $this->getAdapterClass();
-            $this->adapter = new $adapterClass;
+            $this->adapter = new $adapterClass(
+                $this->resourceName,
+                $this->resourceAlias,
+                $this->ruleResolver
+            );
         }
 
         return $this->adapter;

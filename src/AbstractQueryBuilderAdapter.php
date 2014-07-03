@@ -21,13 +21,24 @@ $criteria = [
 
 abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterface
 {
-    protected $alias;
+    protected $resourceName;
+
+    protected $resourceAlias;
+
+    protected $ruleResolver;
 
     protected $parameters;
 
     protected $typeMap;
 
     protected $operatorMap;
+
+    public function __construct($resourceName, $resourceAlias, RuleResolver $ruleResolver)
+    {
+        $this->resourceName = $resourceName;
+        $this->resourceAlias = $resourceAlias;
+        $this->ruleResolver = $ruleResolver;
+    }
 
     abstract public function applyCriteria($queryBuilder, array $criteria);
     abstract public function applySorting($queryBuilder, array $sorting);
@@ -62,21 +73,14 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
     /**
      * @param  string $name
      * @return string
      */
     protected function getFieldName($field)
     {
-        if (false === strpos($field, '.') && $this->alias) {
-            return sprintf('%s.%s', $this->alias, $field);
+        if (strpos($field, '.') === false && $this->resourceAlias) {
+            return sprintf('%s.%s', $this->resourceAlias, $field);
         }
 
         return $field;
@@ -95,6 +99,11 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
     protected function isFieldLess($key)
     {
         return is_numeric($key);
+    }
+
+    protected function isRule($value)
+    {
+        return $value[0] === '[' && substr($value, -1) === ']';
     }
 
     protected function getType($key)
@@ -117,6 +126,11 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         }
 
         return $match['field'];
+    }
+
+    protected function getRule($value)
+    {
+        return trim($value, '[]');
     }
 
     protected function getDefaultOperator($value)
@@ -152,6 +166,15 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         }
 
         if ($this->isFieldLess($key)) {
+            if ($this->isRule($value)) {
+                $criteria = $this->ruleResolver->resolve(
+                    $this->resourceName,
+                    $this->getRule($value)
+                );
+
+                return $this->processCriteria($builder, '#and', $criteria);
+            }
+
             return $this->createRaw($builder, $value);
         }
 

@@ -4,6 +4,7 @@ namespace Anh\DoctrineResource\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Anh\DoctrineResource\RuleResolver;
 
 /**
  * Doctrine MongoDB ODM don't have ability to specify custom repository factory (at least in 1.0.0-BETA10)
@@ -13,13 +14,16 @@ class ResourceRepositoryFactory extends DefaultRepositoryFactory
 {
     protected $paginator;
 
+    protected $ruleResolver;
+
     /**
      * Constructor
      * @param mixed $paginator Paginator, should be compatible with ResourcePaginatorInterface.
      */
-    public function __construct($paginator)
+    public function __construct($paginator, RuleResolver $ruleResolver = null)
     {
         $this->paginator = $paginator;
+        $this->ruleResolver = $ruleResolver ?: new RuleResolver();
     }
 
     /**
@@ -31,7 +35,10 @@ class ResourceRepositoryFactory extends DefaultRepositoryFactory
         $repository = parent::createRepository($documentManager, $documentName);
 
         if ($repository instanceof ResourceRepository) {
-            $repository->setPaginator($this->paginator);
+            $repository
+                ->setPaginator($this->paginator)
+                ->setRuleResolver($this->ruleResolver)
+            ;
         }
 
         return $repository;
