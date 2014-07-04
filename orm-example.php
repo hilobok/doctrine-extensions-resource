@@ -5,19 +5,33 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Anh\DoctrineResource\ORM\ResourceRepositoryFactory;
 use Anh\DoctrineResource\ORM\EventListener\LoadMetadataSubscriber;
-use Anh\DoctrineResource\RuleResolver;
 use Anh\Paginator\Paginator;
 
-// create entity manager configuration
+// define resources
+$resources = [
+    'article' => [ // resource name
+        'model' => 'Anh\BlahBundle\Entity\Article',  // model (required)
+        'repository' => 'Some\Other\Name\Space\Repository', // you can override resource repository here (optional)
+        'interface' => 'Another\Lib\Interface', // for Doctrine ResolveTargetEntityListener (optional, can be array, not implemented yet)
+        'rules' => [ // rules for this resource (optional)
+            'isPublished' => [
+                'isDraft' => false,
+                'r.publishedSince <= current_timestamp()',
+            ],
+        ],
+    ],
+    'category' => [
+        'model' => 'Anh\PaperBundle\Entity\Category',
+        'repository' => 'Anh\PaperBundle\Entity\CategoryRepository',
+    ],
+];
+
+// create config for object manager
 $config = new Configuration();
 /* set up orm config */
 
-// add criteria groups
-$ruleResolver = new RuleResolver();
-$ruleResolver->add('article', 'isPublished', ['isDraft' => false, 'a.publishedSince <= current_timestamp()']);
-
-// set custom repository factory to inject paginator and rule resolver into repository
-$repositoryFactory = new ResourceRepositoryFactory(new Paginator(), $ruleResolver);
+// set custom repository factory to inject paginator into repository
+$repositoryFactory = new ResourceRepositoryFactory($resources, new Paginator());
 $config->setRepositoryFactory($repositoryFactory);
 
 // create entity manager
@@ -26,19 +40,6 @@ $entityManager = EntityManager::create([/* connection params */], $config);
 // create event dispatcher
 $eventDispatcher = new EventDispatcher();
 /* event dispatcher setup */
-
-// define resources
-$resources = [
-    'article' => [
-        'model' => 'Anh\BlahBundle\Entity\Article',
-        'interface' => 'Anh\Taggable\TaggableResourceInterface',
-        'alias' => 'a',
-    ],
-    'paper' => [
-        'model' => 'Anh\PaperBundle\Entity\Paper',
-        'repository' => 'Anh\PaperBundle\Entity\PaperRepository'
-    ],
-];
 
 // add doctrine event subscriber
 $entityManager->getEventManager()->addEventSubscriber(new LoadMetadataSubscriber($resources));
@@ -61,7 +62,17 @@ $articleManager->delete($article);
 // resource repository usage
 $articleRepository = $articleManager->getRepository();
 
-// paginate articles with criteria group
-$publishedArticles = $articleRepository->paginate(1, 20, array('[isPublished]'));
+// paginate published articles
+$publishedArticles = $articleRepository->paginate(1, 20, ['[isPublished]']);
 
-$ratedArticles = $articleRepository->fetch(['%rating' => [ '>' => 10 ]], ['rating' => 'desc'], 5);
+// fetch articles with complex criteria
+$ratedArticles = $articleRepository->fetch(
+    [ // criteria
+        '%rating' => [ '>' => 10 ],
+        '[isPublished]',
+    ],
+    [ // sorting
+        'rating' => 'desc'
+    ],
+    5 // limit
+);

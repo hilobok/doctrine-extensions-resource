@@ -21,9 +21,14 @@ Resource definition is an array with required and optional keys.
 $resources = [
     'article' => [ // resource name
         'model' => 'Some\Name\Space\Entity\Article', // model (required)
-        'alias' => 'a', // alias for query builder (optional), will be 'resource' if omitted
         'repository' => 'Some\Other\Name\Space\Repository', // you can override resource repository here (optional)
         'interface' => 'Another\Lib\Interface', // for Doctrine ResolveTargetEntityListener (optional, can be array, not implemented yet)
+        'rules' => [ // rules for this resource (optional)
+            'isPublished' => [
+                'isDraft' => false,
+                'r.publishedSince <= current_timestamp()',
+            ],
+        ],
     ],
 
     'category' => [ // another resource
@@ -33,7 +38,7 @@ $resources = [
 ```
 
 ### Initialization
-You should configure object manager to use `ResourceRepositoryFactory` in order to inject paginator and rule resolver services into repositories. Extension can use any paginator compatible with `ResourcePaginatorInterface`. About `RuleResolver` see below.
+You should configure object manager to use `ResourceRepositoryFactory` as repository factory in order to inject paginator and rule resolver services into repositories. Extension can use any paginator compatible with `ResourcePaginatorInterface`.
 
 Create entity manager, event dispatcher, add event subscriber and create `ResourceManagerFactory`.
 
@@ -46,9 +51,7 @@ use Anh\DoctrineResource\ORM\ResourceRepositoryFactory;
 use Anh\DoctrineResource\ORM\EventListener\LoadMetadataSubscriber;
 use Anh\Paginator\Paginator;
 
-// create Paginator
-$paginator = new Paginator();
-$repositoryFactory = new ResourceRepositoryFactory($paginator);
+$repositoryFactory = new ResourceRepositoryFactory($resources, new Paginator());
 
 // create config for object manager
 $config = new Configuration();
@@ -103,6 +106,26 @@ Code above will generate this events:
 ### Fetching resources with `ResourceRepository`.
 `ResourceRepository` has two methods for fetching resources: `paginate()` and `fetch()`.
 
+```php
+// resource repository usage
+$articleRepository = $articleManager->getRepository();
+
+// paginate published articles
+$publishedArticles = $articleRepository->paginate(1, 20, ['[isPublished]']);
+
+// fetch articles with complex criteria
+$ratedArticles = $articleRepository->fetch(
+    [ // criteria
+        '%rating' => [ '>' => 10 ],
+        '[isPublished]',
+    ],
+    [ // sorting
+        'rating' => 'desc'
+    ],
+    5 // limit
+);
+```
+
 See [orm-example.php](https://github.com/hilobok/doctrine-extensions-resource/blob/master/orm-example.php).
 
 ## Advanced criteria format
@@ -136,34 +159,14 @@ Symbol `#` with following `and` or `or` is used for changing comparison type. Co
 If you need a few criteria for the same field, simply add a dash followed by a number. Apply the same for the comparison types.
 
 ### Rules
-Rule is predefined group of criteria for resource. You can define it by calling `RuleResolver::add(/* ... */);` with resource name, rule name and criteria. Then you should pass this resolver to `ResourceRepositoryFactory`.
-
-```php
-<?php
-
-use Doctrine\ORM\Configuration;
-use Anh\DoctrineResource\RuleResolver;
-use Anh\DoctrineResource\ORM\ResourceRepositoryFactory;
-
-// create config for object manager
-$config = new Configuration();
-/* set up config */
-
-$paginator = /* ... */;
-
-// add rules
-$ruleResolver = new RuleResolver();
-$ruleResolver->add('article', 'isPublished', ['isDraft' => false, 'a.publishedSince <= current_timestamp()']);
-
-$repositoryFactory = new ResourceRepositoryFactory($paginator, $ruleResolver);
-$config->setRepositoryFactory($repositoryFactory);
-```
-
-Now you can use rule name in square brackets as criterion for `ResourceRepository::paginate()` and `ResourceRepository::fetch()` methods.
+Rule is predefined group of criteria for resource. You can define it in resource definition (key `rules`). When rule is defined you can use its name in square brackets as criterion for `ResourceRepository::paginate()` and `ResourceRepository::fetch()` methods.
 
 ```php
 $repository = $manager->getRepository();
-$publishedArticlesInSection = $repository->fetch([ '[isPublished]', 'section' => $section ]);
+$publishedArticlesInSection = $repository->fetch([
+    '[isPublished]',
+    'section' => $section
+]);
 ```
 
 This advanced criteria format is valid for all available drivers (ORM, PHPCR-ODM, MongoDB-ODM).
