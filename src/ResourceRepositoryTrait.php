@@ -6,13 +6,11 @@ trait ResourceRepositoryTrait
 {
     protected $paginator;
 
-    protected $ruleResolver;
+    protected $rules;
 
     protected $adapter;
 
-    protected $resourceAlias = 'resource';
-
-    protected $resourceName;
+    protected $alias = 'r';
 
     /**
      * {@inheritdoc}
@@ -24,9 +22,9 @@ trait ResourceRepositoryTrait
         return $this;
     }
 
-    public function setRuleResolver(RuleResolver $ruleResolver)
+    public function setRules(array $rules = null)
     {
-        $this->ruleResolver = $ruleResolver;
+        $this->rules = $rules;
 
         return $this;
     }
@@ -61,20 +59,6 @@ trait ResourceRepositoryTrait
         return $this->getAdapter()->getResult($queryBuilder);
     }
 
-    public function setResourceName($resourceName)
-    {
-        $this->resourceName = $resourceName;
-
-        return $this;
-    }
-
-    public function setResourceAlias($resourceAlias)
-    {
-        $this->resourceAlias = $resourceAlias;
-
-        return $this;
-    }
-
     protected function prepareQueryBuilder($queryBuilder, array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
         $this->getAdapter()
@@ -92,7 +76,7 @@ trait ResourceRepositoryTrait
      */
     protected function getQueryBuilder()
     {
-        return $this->createQueryBuilder($this->resourceAlias);
+        return $this->createQueryBuilder($this->alias);
     }
 
     protected function getAdapter()
@@ -100,9 +84,8 @@ trait ResourceRepositoryTrait
         if ($this->adapter === null) {
             $adapterClass = $this->getAdapterClass();
             $this->adapter = new $adapterClass(
-                $this->resourceName,
-                $this->resourceAlias,
-                $this->ruleResolver
+                $this->alias,
+                $this->rules
             );
         }
 

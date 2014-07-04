@@ -21,11 +21,9 @@ $criteria = [
 
 abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterface
 {
-    protected $resourceName;
+    protected $alias;
 
-    protected $resourceAlias;
-
-    protected $ruleResolver;
+    protected $rules;
 
     protected $parameters;
 
@@ -33,11 +31,10 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
 
     protected $operatorMap;
 
-    public function __construct($resourceName, $resourceAlias, RuleResolver $ruleResolver)
+    public function __construct($alias, $rules)
     {
-        $this->resourceName = $resourceName;
-        $this->resourceAlias = $resourceAlias;
-        $this->ruleResolver = $ruleResolver;
+        $this->alias = $alias;
+        $this->rules = $rules;
     }
 
     abstract public function applyCriteria($queryBuilder, array $criteria);
@@ -79,8 +76,8 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
      */
     protected function getFieldName($field)
     {
-        if (strpos($field, '.') === false && $this->resourceAlias) {
-            return sprintf('%s.%s', $this->resourceAlias, $field);
+        if (strpos($field, '.') === false && $this->alias) {
+            return sprintf('%s.%s', $this->alias, $field);
         }
 
         return $field;
@@ -101,7 +98,7 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         return is_numeric($key);
     }
 
-    protected function isRule($value)
+    protected function isRuleName($value)
     {
         return $value[0] === '[' && substr($value, -1) === ']';
     }
@@ -128,9 +125,20 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         return $match['field'];
     }
 
-    protected function getRule($value)
+    protected function getRuleName($value)
     {
         return trim($value, '[]');
+    }
+
+    protected function getRule($rule)
+    {
+        if (isset($this->rules[$rule])) {
+            return $this->rules[$rule];
+        }
+
+        throw new \Exception(
+            sprintf("Rule '%s' not found.", $rule)
+        );
     }
 
     protected function getDefaultOperator($value)
@@ -166,11 +174,8 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         }
 
         if ($this->isFieldLess($key)) {
-            if ($this->isRule($value)) {
-                $criteria = $this->ruleResolver->resolve(
-                    $this->resourceName,
-                    $this->getRule($value)
-                );
+            if ($this->isRuleName($value)) {
+                $criteria = $this->getRule($this->getRuleName($value));
 
                 return $this->processCriteria($builder, '#and', $criteria);
             }

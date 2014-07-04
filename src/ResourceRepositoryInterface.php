@@ -12,7 +12,7 @@ interface ResourceRepositoryInterface extends ObjectRepository
      */
     public function setPaginator($paginator);
 
-    public function setRuleResolver(RuleResolver $ruleResolver);
+    public function setRules(array $rules = null);
 
     /**
      * [paginate description]
@@ -31,8 +31,4 @@ interface ResourceRepositoryInterface extends ObjectRepository
      * @return mixed Fetched data.
      */
     public function fetch(array $criteria = null, array $sorting = null, $limit = null, $offset = null);
-
-    public function setResourceName($name);
-
-    public function setResourceAlias($alias);
 }

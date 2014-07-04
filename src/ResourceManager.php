@@ -28,11 +28,6 @@ class ResourceManager
      */
     protected $resourceName;
 
-    /**
-     * @var string
-     */
-    protected $resourceAlias;
-
     protected $preEvents = array(
         'create' => ResourceEvent::PRE_CREATE,
         'update' => ResourceEvent::PRE_UPDATE,
@@ -45,13 +40,12 @@ class ResourceManager
         'delete' => ResourceEvent::POST_DELETE,
     );
 
-    public function __construct(ObjectManager $manager, EventDispatcherInterface $eventDispatcher, $modelClass, $resourceName, $resourceAlias)
+    public function __construct(ObjectManager $manager, EventDispatcherInterface $eventDispatcher, $modelClass, $resourceName)
     {
         $this->manager = $manager;
         $this->eventDispatcher = $eventDispatcher;
         $this->modelClass = $modelClass;
         $this->resourceName = $resourceName;
-        $this->resourceAlias = $resourceAlias;
     }
 
     public function createResource()
@@ -71,16 +65,7 @@ class ResourceManager
 
     public function getRepository()
     {
-        $repository = $this->manager->getRepository($this->modelClass);
-
-        if ($repository instanceof ResourceRepositoryInterface) {
-            $repository
-                ->setResourceName($this->resourceName)
-                ->setResourceAlias($this->resourceAlias)
-            ;
-        }
-
-        return $repository;
+        return $this->manager->getRepository($this->modelClass);
     }
 
     public function getManager()
