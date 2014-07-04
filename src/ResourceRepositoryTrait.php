@@ -34,11 +34,7 @@ trait ResourceRepositoryTrait
      */
     public function paginate($page, $limit, array $criteria = null, array $sorting = null)
     {
-        $queryBuilder = $this->prepareQueryBuilder(
-            $this->getQueryBuilder(),
-            $criteria,
-            $sorting
-        );
+        $queryBuilder = $this->prepareQueryBuilder($criteria, $sorting);
 
         return $this->paginator->paginate($queryBuilder, $page, $limit);
     }
@@ -48,19 +44,15 @@ trait ResourceRepositoryTrait
      */
     public function fetch(array $criteria = null, array $sorting = null, $limit = null, $offset = null)
     {
-        $queryBuilder = $this->prepareQueryBuilder(
-            $this->getQueryBuilder(),
-            $criteria,
-            $sorting,
-            $limit,
-            $offset
-        );
+        $queryBuilder = $this->prepareQueryBuilder($criteria, $sorting, $limit, $offset);
 
         return $this->getAdapter()->getResult($queryBuilder);
     }
 
-    protected function prepareQueryBuilder($queryBuilder, array $criteria = null, array $sorting = null, $limit = null, $offset = null)
+    public function prepareQueryBuilder(array $criteria = null, array $sorting = null, $limit = null, $offset = null, $queryBuilder = null)
     {
+        $queryBuilder = $queryBuilder ?: $this->getQueryBuilder();
+
         $this->getAdapter()
             ->applyCriteria($queryBuilder, $criteria)
             ->applySorting($queryBuilder, $sorting)
