@@ -103,6 +103,18 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
         return $value[0] === '[' && substr($value, -1) === ']';
     }
 
+    protected function fieldHasJoin($field)
+    {
+        return strpos($field, '.') !== false;
+    }
+
+    protected function getJoin($field)
+    {
+        $parts = explode('.', $field);
+
+        return reset($parts);
+    }
+
     protected function getType($key)
     {
         if (!preg_match('/#(?P<type>and|or)(-\d+)?$/i', $key, $match)) {
@@ -149,7 +161,7 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
     protected function getParameterName($field)
     {
         $number = 1;
-        $name = $field;
+        $name = str_replace('.', '_', $field);
 
         while (array_key_exists($name, $this->parameters)) {
             $name = sprintf('%s%d', $field, $number);
@@ -199,6 +211,10 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
             $field = $key;
         }
 
+        if ($this->fieldHasJoin($field)) {
+            $this->createJoin($builder, $this->getJoin($field));
+        }
+
         if (!array_key_exists($operator, $this->operatorMap)) {
             throw new \Exception(
                 sprintf("Unknown operator '%s'.", $operator)
@@ -212,6 +228,13 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
     {
         throw new \Exception(
             sprintf("Raw condition '%s' not supported.", $value)
+        );
+    }
+
+    protected function createJoin($builder, $join)
+    {
+        throw new \Exception(
+            sprintf("Joins not implemented for '%s'.", get_class($this))
         );
     }
 }

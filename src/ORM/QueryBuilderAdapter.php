@@ -59,6 +59,10 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         }
 
         foreach ($sorting as $field => $order) {
+            if ($this->fieldHasJoin($field)) {
+                $this->createJoin($queryBuilder, $this->getJoin($field));
+            }
+
             $queryBuilder->orderBy($this->getFieldName($field), $order);
         }
 
@@ -98,5 +102,10 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
     protected function createRaw($value)
     {
         return $value;
+    }
+
+    protected function createJoin($builder, $join)
+    {
+        return $builder->join($this->getFieldName($join), $join);
     }
 }

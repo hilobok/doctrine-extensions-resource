@@ -50,6 +50,10 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         }
 
         foreach ($sorting as $field => $order) {
+            if ($this->fieldHasJoin($field)) {
+                $this->createJoin($queryBuilder, $this->getJoin($field));
+            }
+
             $queryBuilder->sort($field, $order);
         }
 
