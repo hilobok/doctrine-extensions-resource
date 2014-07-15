@@ -33,6 +33,8 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         'is not null',
     );
 
+    protected $joins = array();
+
     public function applyCriteria($queryBuilder, array $criteria = null)
     {
         if (empty($criteria)) {
@@ -94,6 +96,10 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
 
     protected function createJoin($builder, $join)
     {
-        return $builder->join($this->getFieldName($join), $join);
+        if (!in_array($join, $this->joins, true)) {
+            $this->joins[] = $join;
+
+            return $builder->join($this->getFieldName($join), $join);
+        }
     }
 }
