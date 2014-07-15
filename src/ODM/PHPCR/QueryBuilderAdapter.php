@@ -41,21 +41,9 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         return $this;
     }
 
-    public function applySorting($queryBuilder, array $sorting = null)
+    protected function createOrderBy($builder, $field, $order)
     {
-        if (empty($sorting)) {
-            return;
-        }
-
-        foreach ($sorting as $field => $order) {
-            if ($this->fieldHasJoin($field)) {
-                $this->createJoin($queryBuilder, $this->getJoin($field));
-            }
-
-            $queryBuilder->addOrderBy()->{$order}()->field($this->getFieldName($field));
-        }
-
-        return $this;
+        return $builder->addOrderBy()->{$order}()->field($this->getFieldName($field));
     }
 
     protected function getDefaultOperator($value)

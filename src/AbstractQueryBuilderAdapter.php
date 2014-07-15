@@ -38,10 +38,27 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
     }
 
     abstract public function applyCriteria($queryBuilder, array $criteria);
-    abstract public function applySorting($queryBuilder, array $sorting);
 
     abstract protected function createType($builder, $type, $value);
     abstract protected function createOperator($builder, $field, $operator, $value);
+    abstract protected function createOrderBy($builder, $field, $order);
+
+    public function applySorting($queryBuilder, array $sorting = null)
+    {
+        if (empty($sorting)) {
+            return $this;
+        }
+
+        foreach ($sorting as $field => $order) {
+            if ($this->fieldHasJoin($field)) {
+                $this->createJoin($queryBuilder, $this->getJoin($field));
+            }
+
+            $this->createOrderBy($queryBuilder, $field, $order);
+        }
+
+        return $this;
+    }
 
     public function applyLimit($queryBuilder, $limit = null)
     {
