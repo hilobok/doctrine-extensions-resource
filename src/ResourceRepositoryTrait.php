@@ -49,6 +49,16 @@ trait ResourceRepositoryTrait
         return $this->getAdapter()->getResult($queryBuilder);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function fetchOne(array $criteria = null, array $sorting = null)
+    {
+        $result = $this->fetch($criteria, $sorting, 1);
+
+        return $result ? current($result) : null;
+    }
+
     public function prepareQueryBuilder(array $criteria = null, array $sorting = null, $limit = null, $offset = null, $queryBuilder = null)
     {
         $queryBuilder = $queryBuilder ?: $this->getQueryBuilder();

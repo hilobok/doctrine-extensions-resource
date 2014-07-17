@@ -31,4 +31,12 @@ interface ResourceRepositoryInterface extends ObjectRepository
      * @return mixed Fetched data.
      */
     public function fetch(array $criteria = null, array $sorting = null, $limit = null, $offset = null);
+
+    /**
+     * [fetchOne description]
+     * @param  array $criteria Search criteria.
+     * @param  array $sorting  Sorting order.
+     * @return mixed Fetched data.
+     */
+    public function fetchOne(array $criteria = null, array $sorting = null);
 }
