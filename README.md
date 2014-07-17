@@ -169,6 +169,20 @@ $publishedArticlesInSection = $repository->fetch([
 ]);
 ```
 
+### Auto joins
+Query builder adds inner join automatically... (to be written)
+
+```php
+$criteria = [
+    'user.email' => $email,
+    '%user.role' => [ 'in' => ['guest', 'anonymous'] ],
+];
+
+$sorting = [
+    'user.createdAt' => 'desc',
+];
+```
+
 This advanced criteria format is valid for all available drivers (ORM, PHPCR-ODM, MongoDB-ODM).
 
 ### Note
