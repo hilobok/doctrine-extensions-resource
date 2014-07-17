@@ -75,6 +75,10 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
 
     protected function createOperator($builder, $field, $operator, $value)
     {
+        if ($this->operatorMap[$operator] == 'eq' && is_null($value)) {
+            $operator = 'is null';
+        }
+
         if (in_array($operator, $this->singleOperandOperators, true)) {
             $params = array($this->getFieldName($field));
         } else {
