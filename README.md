@@ -6,7 +6,7 @@ Extension provides simplified and unified interface for working with resources.
 
 ## Installation
 ```bash
-$ php composer.phar require 'anh/doctrine-extensions-resource:0.3.*'
+$ php composer.phar require 'anh/doctrine-extensions-resource:0.4.*'
 ```
 
 ## Symfony integration
