@@ -145,7 +145,7 @@ abstract class AbstractQueryBuilderAdapter implements QueryBuilderAdapterInterfa
 
     protected function getField($key)
     {
-        if (!preg_match('/%(?P<field>[a-z_\d]+)(-\d+)?$/i', $key, $match)) {
+        if (!preg_match('/%(?P<field>[a-z\._\d]+)(-\d+)?$/i', $key, $match)) {
             throw new \Exception(
                 sprintf("Unable to get field from '%s'.", $key)
             );
