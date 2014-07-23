@@ -33,8 +33,6 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
         'is not null',
     );
 
-    protected $joins = array();
-
     public function applyCriteria($queryBuilder, array $criteria = null)
     {
         if (empty($criteria)) {
@@ -100,10 +98,24 @@ class QueryBuilderAdapter extends AbstractQueryBuilderAdapter
 
     protected function createJoin($builder, $join)
     {
-        if (!in_array($join, $this->joins, true)) {
-            $this->joins[] = $join;
+        return $this->builderHasJoin($builder, $join)
+            ? $builder
+            : $builder->join($this->getFieldName($join), $join)
+        ;
+    }
 
-            return $builder->join($this->getFieldName($join), $join);
+    protected function builderHasJoin($builder, $join)
+    {
+        $joins = $builder->getDqlPart('join');
+
+        if (isset($joins[$this->alias]) && is_array($joins[$this->alias])) {
+            foreach ($joins[$this->alias] as $expr) {
+                if ($expr->getAlias() == $join) {
+                    return true;
+                }
+            }
         }
+
+        return false;
     }
 }
