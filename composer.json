@@ -25,8 +25,8 @@
         "doctrine/phpcr-odm": "~1.0",
         "jackalope/jackalope": "~1.0",
         "jackalope/jackalope-doctrine-dbal": "~1.0",
-        "phpspec/phpspec": "2.1.x-dev",
-        "anh/paginator": "0.1.0"
+        "phpspec/phpspec": "~2.2,<2.3",
+        "anh/paginator": "0.2.*"
     },
 
     "suggest": {

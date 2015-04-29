@@ -12,9 +12,10 @@ trait ResourceRepositoryFactoryTrait
 
     /**
      * Constructor
+     * @param array $resources Resources definitions
      * @param mixed $paginator Paginator, should be compatible with ResourcePaginatorInterface.
      */
-    public function __construct($resources, $paginator = null)
+    public function __construct(array $resources = null, $paginator = null)
     {
         $this->resources = $resources;
         $this->paginator = $paginator;
